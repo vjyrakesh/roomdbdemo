@@ -21,4 +21,7 @@ interface ElectiveDao {
 
     @Query("select * from elective where elective_name=:name")
     fun getElectiveByName(name: String): Elective
+
+    @Query("select * from elective where elective_name=:name")
+    suspend fun getElectiveByNameSuspend(name: String): Elective
 }

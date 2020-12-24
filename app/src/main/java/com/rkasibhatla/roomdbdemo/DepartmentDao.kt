@@ -27,4 +27,7 @@ interface DepartmentDao {
 
     @Query("select * from department where deptId=:deptId")
     fun getDepartmentById(deptId: Int): Department
+
+    @Query("select * from department where deptId=:deptId")
+    suspend fun getDepartmentByIdNew(deptId: Int): Department
 }

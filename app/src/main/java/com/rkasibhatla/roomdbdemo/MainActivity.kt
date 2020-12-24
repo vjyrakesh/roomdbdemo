@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 
 class MainActivity : AppCompatActivity() {
 
@@ -54,8 +55,9 @@ class MainActivity : AppCompatActivity() {
             val elName = findViewById<EditText>(R.id.ed_elective_name).text.toString()
             GlobalScope.launch {
                 val elective = Elective(electiveName = elName)
-                studentViewModel.insertElective(elective)
+                studentViewModel.insertElectiveNew(elective)
             }
+
         }
 
         val resetBtn = findViewById<Button>(R.id.btn_reset)
@@ -163,6 +165,16 @@ class StudentViewModel(application: Application) : AndroidViewModel(application)
         }
     }
 
+    fun insertElectiveNew(elective: Elective) {
+        runBlocking {
+            db.electiveDao().insert(elective)
+            val addedId =
+                db.electiveDao().getElectiveByNameSuspend(elective.electiveName).electiveId
+            println("Added elective id: $addedId")
+        }
+
+    }
+
     fun getAllElectives(): List<Elective> {
         return db.electiveDao().getAllElectives()
     }
@@ -201,4 +213,6 @@ class StudentViewModel(application: Application) : AndroidViewModel(application)
     fun getDepartmentById(deptId: Int): Department {
         return db.departmentDao().getDepartmentById(deptId)
     }
+
+
 }

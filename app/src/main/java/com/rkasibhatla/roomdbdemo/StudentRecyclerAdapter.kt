@@ -6,7 +6,9 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 
 class StudentRecyclerAdapter(private val studentModel: StudentViewModel):
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
@@ -26,10 +28,15 @@ class StudentRecyclerAdapter(private val studentModel: StudentViewModel):
         val deptWithStudent = studentModel.allStudents.value?.get(position)
         (holder as StudentViewHolder).studentNameView.text =
             "${deptWithStudent?.name}"
+        var deptName = "nil"
         GlobalScope.launch {
-            val deptName = studentModel.getDepartmentById(deptWithStudent?.deptId?:0).name
-            holder.deptNameView.text = deptName
+            val deptNameDef = async {
+                studentModel.getDepartmentById(deptWithStudent?.deptId?:0).name
+            }
+            holder.deptNameView.text = deptNameDef.await()
         }
+
+//        holder.deptNameView.text = deptName
 
     }
 
